@@ -60,18 +60,60 @@
       <div
         id="hamburgerMenu"
         style="
-          display: none;
-          position: absolute;
-          top: 40px;
+          position: fixed;
+          top: 0;
           right: 0;
-          background: rgba(0, 0, 0, 0.9);
-          border-radius: 5px;
-          padding: 10px;
-          min-width: 150px;
+          height: 100vh;
+          width: 280px;
+          background: rgba(0, 0, 0, 0.95);
+          border-radius: 0;
+          padding: 0;
           flex-direction: column;
-          gap: 5px;
+          gap: 0;
+          z-index: 2000;
+          transform: translateX(100%);
+          transition: transform 0.3s ease;
+          overflow-y: auto;
+          box-sizing: border-box;
         "
       >
+        <!-- Panel Header with Close Button -->
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          "
+        >
+          <span style="color: white; font-size: 16px; font-weight: 500;">Menu</span>
+          <button
+            id="closePanelBtn"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 18px;
+              line-height: 1;
+            "
+            title="Close menu"
+          >
+            &#10005;
+          </button>
+        </div>
+        <!-- Panel Content -->
+        <div
+          style="
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+          "
+        >
         <button
           id="dailyQuestionsBtn"
           style="
@@ -314,6 +356,8 @@
         >
           v2026.01.09.v.01
         </div>
+        </div>
+        <!-- End Panel Content -->
       </div>
     </div>
 
