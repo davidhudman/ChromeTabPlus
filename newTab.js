@@ -989,22 +989,64 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Hamburger menu toggle
+  // Hamburger menu toggle (slide-out panel)
   const hamburgerBtn = document.getElementById("hamburgerBtn");
   const hamburgerMenu = document.getElementById("hamburgerMenu");
+  const menuBackdrop = document.getElementById("menuBackdrop");
+
+  // Panel open/close helper functions
+  function openPanel() {
+    if (hamburgerMenu) {
+      hamburgerMenu.style.transform = "translateX(0)";
+      hamburgerMenu.setAttribute("data-panel-open", "true");
+    }
+    if (menuBackdrop) {
+      menuBackdrop.style.display = "block";
+      // Trigger reflow to ensure transition works
+      menuBackdrop.offsetHeight;
+      menuBackdrop.style.opacity = "1";
+    }
+  }
+
+  function closePanel() {
+    if (hamburgerMenu) {
+      hamburgerMenu.style.transform = "translateX(100%)";
+      hamburgerMenu.removeAttribute("data-panel-open");
+    }
+    if (menuBackdrop) {
+      menuBackdrop.style.opacity = "0";
+      // Hide after transition completes
+      setTimeout(function() {
+        if (!hamburgerMenu.hasAttribute("data-panel-open")) {
+          menuBackdrop.style.display = "none";
+        }
+      }, 300);
+    }
+  }
+
+  function isPanelOpen() {
+    return hamburgerMenu && hamburgerMenu.hasAttribute("data-panel-open");
+  }
+
+  // Make closePanel available globally for other handlers
+  window.closePanel = closePanel;
+
   if (hamburgerBtn && hamburgerMenu) {
     hamburgerBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      const isVisible = hamburgerMenu.style.display === "flex";
-      hamburgerMenu.style.display = isVisible ? "none" : "flex";
-    });
-
-    // Close hamburger menu when clicking outside
-    document.addEventListener("click", function (e) {
-      if (!hamburgerBtn.contains(e.target) && !hamburgerMenu.contains(e.target)) {
-        hamburgerMenu.style.display = "none";
+      if (isPanelOpen()) {
+        closePanel();
+      } else {
+        openPanel();
       }
     });
+
+    // Close hamburger menu when clicking outside (on backdrop)
+    if (menuBackdrop) {
+      menuBackdrop.addEventListener("click", function (e) {
+        closePanel();
+      });
+    }
   }
 
   // Image gallery modal
@@ -1019,7 +1061,7 @@ document.addEventListener("DOMContentLoaded", function () {
       e.stopPropagation();
 
       // Close hamburger menu
-      if (hamburgerMenu) hamburgerMenu.style.display = "none";
+      if (typeof closePanel === "function") closePanel();
 
       // Populate gallery with thumbnails
       imageGalleryGrid.innerHTML = "";
@@ -1120,7 +1162,7 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleTimerBtnMenu.addEventListener("click", function(e) {
       e.preventDefault();
       e.stopPropagation();
-      if (hamburgerMenu) hamburgerMenu.style.display = "none";
+      if (typeof closePanel === "function") closePanel();
       if (typeof toggleTimerVisibility === "function") {
         toggleTimerVisibility();
       }
@@ -1164,7 +1206,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addProjectBtnMenu.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (hamburgerMenu) hamburgerMenu.style.display = "none";
+      if (typeof closePanel === "function") closePanel();
       createNewProject();
     });
   }
@@ -1173,7 +1215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     deleteProjectBtnMenu.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      if (hamburgerMenu) hamburgerMenu.style.display = "none";
+      if (typeof closePanel === "function") closePanel();
       deleteCurrentProject();
     });
   }
