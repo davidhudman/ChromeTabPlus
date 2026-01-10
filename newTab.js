@@ -1047,6 +1047,13 @@ document.addEventListener("DOMContentLoaded", function () {
         closePanel();
       });
     }
+
+    // Close hamburger menu when pressing ESC key
+    document.addEventListener("keydown", function (e) {
+      if ((e.key === "Escape" || e.keyCode === 27) && isPanelOpen()) {
+        closePanel();
+      }
+    });
   }
 
   // Image gallery modal
