@@ -122,6 +122,172 @@ function extractDomainFromUrl(url) {
   }
 }
 
+// Add a new Quick Link
+// Validates URL, generates default name if not provided, saves to storage, and updates UI
+function addQuickLink() {
+  var urlInput = document.getElementById('quickLinkUrlInput');
+  var nameInput = document.getElementById('quickLinkNameInput');
+
+  if (!urlInput) {
+    return;
+  }
+
+  var url = urlInput.value.trim();
+  var name = nameInput ? nameInput.value.trim() : '';
+
+  // Validate URL is not empty
+  if (!url) {
+    showNotification('Please enter a URL');
+    return;
+  }
+
+  // Ensure URL has a protocol for proper parsing
+  var urlToValidate = url;
+  if (!urlToValidate.match(/^https?:\/\//i)) {
+    urlToValidate = 'https://' + urlToValidate;
+  }
+
+  // Validate URL format
+  try {
+    new URL(urlToValidate);
+  } catch (e) {
+    showNotification('Please enter a valid URL (e.g., https://example.com)');
+    return;
+  }
+
+  // Generate default name from domain if not provided
+  if (!name) {
+    name = extractDomainFromUrl(url);
+    if (!name) {
+      name = url; // Fallback to URL if domain extraction fails
+    }
+  }
+
+  // Create link object with unique ID and timestamp
+  var link = {
+    id: Date.now().toString(),
+    url: urlToValidate,
+    name: name,
+    createdAt: Date.now()
+  };
+
+  // Add to global array
+  quickLinks.push(link);
+
+  // Save to storage
+  saveQuickLinks(quickLinks);
+
+  // Update UI
+  renderQuickLinks();
+
+  // Clear input fields
+  urlInput.value = '';
+  if (nameInput) {
+    nameInput.value = '';
+  }
+}
+
+// Render Quick Links in the container
+// Displays saved links as clickable items with delete buttons
+function renderQuickLinks() {
+  var container = document.getElementById('quickLinksContainer');
+  if (!container) {
+    return;
+  }
+
+  // Clear existing content
+  container.innerHTML = '';
+
+  // Handle empty state
+  if (!quickLinks || quickLinks.length === 0) {
+    var emptyMessage = document.createElement('div');
+    emptyMessage.style.color = 'rgba(255, 255, 255, 0.5)';
+    emptyMessage.style.fontSize = '11px';
+    emptyMessage.style.fontStyle = 'italic';
+    emptyMessage.style.padding = '5px 0';
+    emptyMessage.textContent = 'No quick links yet';
+    container.appendChild(emptyMessage);
+    return;
+  }
+
+  // Render each link
+  quickLinks.forEach(function(link) {
+    var linkItem = document.createElement('div');
+    linkItem.style.display = 'flex';
+    linkItem.style.alignItems = 'center';
+    linkItem.style.justifyContent = 'space-between';
+    linkItem.style.background = 'rgba(255, 255, 255, 0.1)';
+    linkItem.style.padding = '5px 8px';
+    linkItem.style.borderRadius = '4px';
+    linkItem.style.cursor = 'pointer';
+    linkItem.style.fontSize = '12px';
+
+    // Link text (truncate if too long)
+    var linkText = document.createElement('span');
+    linkText.style.color = 'white';
+    linkText.style.overflow = 'hidden';
+    linkText.style.textOverflow = 'ellipsis';
+    linkText.style.whiteSpace = 'nowrap';
+    linkText.style.maxWidth = '140px';
+    linkText.style.flex = '1';
+    // Escape HTML in name for security
+    linkText.textContent = link.name;
+    linkText.title = link.url;
+
+    // Click handler to open link in new tab
+    linkText.addEventListener('click', function() {
+      window.open(link.url, '_blank');
+    });
+
+    // Delete button
+    var deleteBtn = document.createElement('span');
+    deleteBtn.style.color = 'rgba(255, 255, 255, 0.5)';
+    deleteBtn.style.marginLeft = '8px';
+    deleteBtn.style.cursor = 'pointer';
+    deleteBtn.style.fontSize = '14px';
+    deleteBtn.style.lineHeight = '1';
+    deleteBtn.textContent = '×';
+    deleteBtn.title = 'Delete link';
+
+    // Delete click handler
+    deleteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      deleteQuickLink(link.id);
+    });
+
+    // Hover effect for delete button
+    deleteBtn.addEventListener('mouseenter', function() {
+      deleteBtn.style.color = 'rgba(255, 100, 100, 1)';
+    });
+    deleteBtn.addEventListener('mouseleave', function() {
+      deleteBtn.style.color = 'rgba(255, 255, 255, 0.5)';
+    });
+
+    linkItem.appendChild(linkText);
+    linkItem.appendChild(deleteBtn);
+    container.appendChild(linkItem);
+  });
+}
+
+// Delete a Quick Link by ID
+// Removes link from array, saves to storage, and re-renders UI
+function deleteQuickLink(id) {
+  if (!confirm('Delete this quick link?')) {
+    return;
+  }
+
+  // Filter out the link with matching ID
+  quickLinks = quickLinks.filter(function(link) {
+    return link.id !== id;
+  });
+
+  // Save updated array to storage
+  saveQuickLinks(quickLinks);
+
+  // Re-render UI
+  renderQuickLinks();
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // $("#helloText").click(function () {
   //   nextImageInChromeStoragePhotoArray();
@@ -442,8 +608,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize countdown timer
   initCountdownTimer();
 
-  // Initialize Quick Links from storage
-  loadQuickLinks();
+  // Initialize Quick Links from storage and render them
+  loadQuickLinks(renderQuickLinks);
+
+  // Add Quick Link button click handler
+  var addQuickLinkBtn = document.getElementById('addQuickLinkBtn');
+  if (addQuickLinkBtn) {
+    addQuickLinkBtn.addEventListener('click', addQuickLink);
+  }
 
   // Migrate todos to include status and create board controls
   migrateTodoStatusesIfNeeded(function () {
