@@ -344,6 +344,95 @@
         >
           View: Default
         </button>
+        <!-- Quick Links Section -->
+        <div
+          id="quickLinksSection"
+          style="
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+          "
+        >
+          <div
+            style="
+              color: white;
+              font-size: 12px;
+              font-weight: 500;
+              margin-bottom: 8px;
+            "
+          >
+            Quick Links
+          </div>
+          <!-- Add Quick Link Form -->
+          <div
+            id="quickLinkForm"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+              margin-bottom: 8px;
+            "
+          >
+            <input
+              type="text"
+              id="quickLinkUrlInput"
+              placeholder="Enter URL"
+              style="
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 6px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                width: 100%;
+                box-sizing: border-box;
+              "
+            />
+            <input
+              type="text"
+              id="quickLinkNameInput"
+              placeholder="Name (optional)"
+              style="
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 6px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                width: 100%;
+                box-sizing: border-box;
+              "
+            />
+            <button
+              id="addQuickLinkBtn"
+              style="
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border: none;
+                padding: 6px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 12px;
+                text-align: center;
+              "
+            >
+              + Add Link
+            </button>
+          </div>
+          <!-- Quick Links Container -->
+          <div
+            id="quickLinksContainer"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 3px;
+              max-height: 150px;
+              overflow-y: auto;
+            "
+          >
+            <!-- Quick links will be dynamically added here -->
+          </div>
+        </div>
         <div
           style="
             color: rgba(255, 255, 255, 0.4);
