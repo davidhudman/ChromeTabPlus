@@ -1056,6 +1056,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Close panel button (X) handler
+  const closePanelBtn = document.getElementById("closePanelBtn");
+  if (closePanelBtn) {
+    closePanelBtn.addEventListener("click", function () {
+      closePanel();
+    });
+  }
+
   // Image gallery modal
   const viewAllImagesBtn = document.getElementById("viewAllImagesBtn");
   const imageGalleryModal = document.getElementById("imageGalleryModal");
