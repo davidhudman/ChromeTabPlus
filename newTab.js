@@ -64,6 +64,35 @@ function loadBundledBackgroundsList() {
 
 var googlePhotosReel = [];
 
+// Extract domain from URL for Quick Links feature
+// Returns hostname without www. prefix, or null for invalid URLs
+function extractDomainFromUrl(url) {
+  if (!url || typeof url !== 'string') {
+    return null;
+  }
+
+  try {
+    // Ensure URL has a protocol for proper parsing
+    let urlToParse = url.trim();
+    if (!urlToParse.match(/^https?:\/\//i)) {
+      urlToParse = 'https://' + urlToParse;
+    }
+
+    const urlObj = new URL(urlToParse);
+    let hostname = urlObj.hostname;
+
+    // Remove www. prefix if present
+    if (hostname.startsWith('www.')) {
+      hostname = hostname.substring(4);
+    }
+
+    return hostname || null;
+  } catch (e) {
+    // Invalid URL format
+    return null;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // $("#helloText").click(function () {
   //   nextImageInChromeStoragePhotoArray();
