@@ -64,6 +64,35 @@ function loadBundledBackgroundsList() {
 
 var googlePhotosReel = [];
 
+// Quick Links array - loaded from chrome.storage.sync
+var quickLinks = [];
+
+// Load Quick Links from chrome.storage.sync
+// Fetches stored links array and updates global quickLinks variable
+// Calls optional callback after loading completes
+function loadQuickLinks(callback) {
+  chrome.storage.sync.get(
+    {
+      quickLinks: []
+    },
+    function (items) {
+      quickLinks = items.quickLinks || [];
+      if (typeof callback === 'function') {
+        callback(quickLinks);
+      }
+    }
+  );
+}
+
+// Save Quick Links to chrome.storage.sync
+// Persists the provided links array (or current global array) to storage
+function saveQuickLinks(links) {
+  var linksToSave = links !== undefined ? links : quickLinks;
+  chrome.storage.sync.set({
+    quickLinks: linksToSave
+  });
+}
+
 // Extract domain from URL for Quick Links feature
 // Returns hostname without www. prefix, or null for invalid URLs
 function extractDomainFromUrl(url) {
@@ -412,6 +441,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize countdown timer
   initCountdownTimer();
+
+  // Initialize Quick Links from storage
+  loadQuickLinks();
 
   // Migrate todos to include status and create board controls
   migrateTodoStatusesIfNeeded(function () {
