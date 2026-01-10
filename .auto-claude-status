@@ -1,15 +1,15 @@
 {
   "active": true,
-  "spec": "003-add-todo-search-filter-by-text",
+  "spec": "005-let-s-transform-the-sandwich-dropdown-menu-into-a-",
   "state": "building",
   "subtasks": {
-    "completed": 0,
-    "total": 0,
+    "completed": 1,
+    "total": 14,
     "in_progress": 1,
     "failed": 0
   },
   "phase": {
-    "current": "Polish and Testing",
+    "current": "Panel Structure Transformation",
     "id": null,
     "total": 3
   },
@@ -18,8 +18,8 @@
     "max": 1
   },
   "session": {
-    "number": 10,
-    "started_at": "2026-01-07T15:58:19.263947"
+    "number": 2,
+    "started_at": "2026-01-10T11:43:35.877196"
   },
-  "last_update": "2026-01-07T16:17:03.921721"
+  "last_update": "2026-01-10T11:45:11.398679"
 }
