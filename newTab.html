@@ -450,7 +450,7 @@
       </div>
     </div>
 
-    <!-- Backdrop overlay for slide-out panel -->
+    <!-- Backdrop overlay for slide-out panel (transparent, catches clicks to close panel) -->
     <div
       id="menuBackdrop"
       style="
@@ -460,10 +460,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: transparent;
         z-index: 1999;
-        opacity: 0;
-        transition: opacity 300ms;
       "
     ></div>
 

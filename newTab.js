@@ -1235,9 +1235,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (menuBackdrop) {
       menuBackdrop.style.display = "block";
-      // Trigger reflow to ensure transition works
-      menuBackdrop.offsetHeight;
-      menuBackdrop.style.opacity = "1";
     }
   }
 
@@ -1247,13 +1244,7 @@ document.addEventListener("DOMContentLoaded", function () {
       hamburgerMenu.removeAttribute("data-panel-open");
     }
     if (menuBackdrop) {
-      menuBackdrop.style.opacity = "0";
-      // Hide after transition completes
-      setTimeout(function() {
-        if (!hamburgerMenu.hasAttribute("data-panel-open")) {
-          menuBackdrop.style.display = "none";
-        }
-      }, 300);
+      menuBackdrop.style.display = "none";
     }
   }
 
