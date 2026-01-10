@@ -57,397 +57,6 @@
       >
         &#9776;
       </button>
-      <div
-        id="hamburgerMenu"
-        style="
-          position: fixed;
-          top: 0;
-          right: 0;
-          height: 100vh;
-          width: 280px;
-          background: rgba(0, 0, 0, 0.95);
-          border-radius: 0;
-          padding: 0;
-          flex-direction: column;
-          gap: 0;
-          z-index: 2000;
-          transform: translateX(100%);
-          transition: transform 300ms ease-in-out;
-          overflow-y: auto;
-          box-sizing: border-box;
-        "
-      >
-        <!-- Panel Header with Close Button -->
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          "
-        >
-          <span style="color: white; font-size: 16px; font-weight: 500;">Menu</span>
-          <button
-            id="closePanelBtn"
-            style="
-              background: rgba(255, 255, 255, 0.1);
-              color: white;
-              border: none;
-              padding: 8px 12px;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 18px;
-              line-height: 1;
-            "
-            title="Close menu"
-          >
-            &#10005;
-          </button>
-        </div>
-        <!-- Panel Content -->
-        <div
-          style="
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-          "
-        >
-        <button
-          id="dailyQuestionsBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-          "
-        >
-          <span>Daily Qs</span>
-          <span id="dailyCheck" style="color: #28a745; font-weight: bold; display: none">&#10003;</span>
-        </button>
-        <button
-          id="goalsBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          Goals
-        </button>
-        <button
-          id="toggleDatesBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          Dates: On
-        </button>
-        <button
-          id="toggleTodoViewBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          Advanced Settings
-        </button>
-        <button
-          id="addTodoBtnTopLeft"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          + Add Todo
-        </button>
-        <div style="display: flex; flex-direction: column; gap: 3px; width: 100%;">
-          <div style="display: flex; align-items: center; width: 100%;">
-            <button
-              id="addProjectBtnMenu"
-              style="
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                border: none;
-                padding: 8px 12px;
-                border-radius: 5px 0 0 5px;
-                cursor: pointer;
-                font-size: 14px;
-              "
-            >
-              +
-            </button>
-            <span style="color: white; font-size: 12px; flex: 1; text-align: center; background: rgba(255,255,255,0.1); padding: 8px 0;">Project</span>
-            <button
-              id="deleteProjectBtnMenu"
-              style="
-                background: rgba(220, 53, 69, 0.6);
-                color: white;
-                border: none;
-                padding: 8px 12px;
-                border-radius: 0 5px 5px 0;
-                cursor: pointer;
-                font-size: 14px;
-                display: none;
-              "
-              title="Delete current project"
-            >
-              -
-            </button>
-            <button
-              id="deleteProjectDisabledMenu"
-              style="
-                background: rgba(100, 100, 100, 0.4);
-                color: rgba(255, 255, 255, 0.5);
-                border: none;
-                padding: 8px 12px;
-                border-radius: 0 5px 5px 0;
-                cursor: not-allowed;
-                font-size: 14px;
-              "
-              title="Select a project first to delete it"
-              disabled
-            >
-              -
-            </button>
-          </div>
-          <span
-            id="projectHintText"
-            style="color: rgba(255,255,255,0.5); font-size: 10px; text-align: center;"
-          >
-            Select a project from the board to enable delete button
-          </span>
-        </div>
-        <button
-          id="toggleZenBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          Zen
-        </button>
-        <button
-          id="toggleTimerBtnMenu"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-          "
-        >
-          Toggle Timer
-        </button>
-        <div style="display: flex; gap: 5px; align-items: center;">
-          <button
-            id="prevBgBtn"
-            style="
-              background: rgba(255, 255, 255, 0.1);
-              color: white;
-              border: none;
-              padding: 8px 12px;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 14px;
-            "
-            title="Previous background"
-          >
-            &lt;
-          </button>
-          <button
-            id="viewAllImagesBtn"
-            style="
-              background: rgba(255, 255, 255, 0.1);
-              color: white;
-              border: none;
-              padding: 8px 10px;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 12px;
-            "
-            title="View all background images"
-          >
-            All Images
-          </button>
-          <button
-            id="nextBgBtn"
-            style="
-              background: rgba(255, 255, 255, 0.1);
-              color: white;
-              border: none;
-              padding: 8px 12px;
-              border-radius: 5px;
-              cursor: pointer;
-              font-size: 14px;
-            "
-            title="Next background"
-          >
-            &gt;
-          </button>
-        </div>
-        <button
-          id="bgViewModeBtn"
-          style="
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            text-align: left;
-            width: 100%;
-          "
-          title="Cycle through background view modes"
-        >
-          View: Default
-        </button>
-        <!-- Quick Links Section -->
-        <div
-          id="quickLinksSection"
-          style="
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-          "
-        >
-          <div
-            style="
-              color: white;
-              font-size: 12px;
-              font-weight: 500;
-              margin-bottom: 8px;
-            "
-          >
-            Quick Links
-          </div>
-          <!-- Add Quick Link Form -->
-          <div
-            id="quickLinkForm"
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 5px;
-              margin-bottom: 8px;
-            "
-          >
-            <input
-              type="text"
-              id="quickLinkUrlInput"
-              placeholder="Enter URL"
-              style="
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 6px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                width: 100%;
-                box-sizing: border-box;
-              "
-            />
-            <input
-              type="text"
-              id="quickLinkNameInput"
-              placeholder="Name (optional)"
-              style="
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: 6px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                width: 100%;
-                box-sizing: border-box;
-              "
-            />
-            <button
-              id="addQuickLinkBtn"
-              style="
-                background: rgba(255, 255, 255, 0.1);
-                color: white;
-                border: none;
-                padding: 6px 10px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 12px;
-                text-align: center;
-              "
-            >
-              + Add Link
-            </button>
-          </div>
-          <!-- Quick Links Container -->
-          <div
-            id="quickLinksContainer"
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 3px;
-              max-height: 150px;
-              overflow-y: auto;
-            "
-          >
-            <!-- Quick links will be dynamically added here -->
-          </div>
-        </div>
-        <div
-          style="
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 10px;
-            text-align: center;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 5px;
-          "
-        >
-          v2026.01.09.v.01
-        </div>
-        </div>
-        <!-- End Panel Content -->
-      </div>
     </div>
 
     <!-- Backdrop overlay for slide-out panel (transparent, catches clicks to close panel) -->
@@ -464,6 +73,399 @@
         z-index: 1999;
       "
     ></div>
+
+    <!-- Slide-out Panel Menu (moved outside container for proper z-index stacking) -->
+    <div
+      id="hamburgerMenu"
+      style="
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 280px;
+        background: rgba(0, 0, 0, 0.95);
+        border-radius: 0;
+        padding: 0;
+        flex-direction: column;
+        gap: 0;
+        z-index: 2000;
+        transform: translateX(100%);
+        transition: transform 300ms ease-in-out;
+        overflow-y: auto;
+        box-sizing: border-box;
+      "
+    >
+      <!-- Panel Header with Close Button -->
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        "
+      >
+        <span style="color: white; font-size: 16px; font-weight: 500;">Menu</span>
+        <button
+          id="closePanelBtn"
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+          "
+          title="Close menu"
+        >
+          &#10005;
+        </button>
+      </div>
+      <!-- Panel Content -->
+      <div
+        style="
+          padding: 15px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        "
+      >
+      <button
+        id="dailyQuestionsBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        "
+      >
+        <span>Daily Qs</span>
+        <span id="dailyCheck" style="color: #28a745; font-weight: bold; display: none">&#10003;</span>
+      </button>
+      <button
+        id="goalsBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        Goals
+      </button>
+      <button
+        id="toggleDatesBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        Dates: On
+      </button>
+      <button
+        id="toggleTodoViewBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        Advanced Settings
+      </button>
+      <button
+        id="addTodoBtnTopLeft"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        + Add Todo
+      </button>
+      <div style="display: flex; flex-direction: column; gap: 3px; width: 100%;">
+        <div style="display: flex; align-items: center; width: 100%;">
+          <button
+            id="addProjectBtnMenu"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 5px 0 0 5px;
+              cursor: pointer;
+              font-size: 14px;
+            "
+          >
+            +
+          </button>
+          <span style="color: white; font-size: 12px; flex: 1; text-align: center; background: rgba(255,255,255,0.1); padding: 8px 0;">Project</span>
+          <button
+            id="deleteProjectBtnMenu"
+            style="
+              background: rgba(220, 53, 69, 0.6);
+              color: white;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 0 5px 5px 0;
+              cursor: pointer;
+              font-size: 14px;
+              display: none;
+            "
+            title="Delete current project"
+          >
+            -
+          </button>
+          <button
+            id="deleteProjectDisabledMenu"
+            style="
+              background: rgba(100, 100, 100, 0.4);
+              color: rgba(255, 255, 255, 0.5);
+              border: none;
+              padding: 8px 12px;
+              border-radius: 0 5px 5px 0;
+              cursor: not-allowed;
+              font-size: 14px;
+            "
+            title="Select a project first to delete it"
+            disabled
+          >
+            -
+          </button>
+        </div>
+        <span
+          id="projectHintText"
+          style="color: rgba(255,255,255,0.5); font-size: 10px; text-align: center;"
+        >
+          Select a project from the board to enable delete button
+        </span>
+      </div>
+      <button
+        id="toggleZenBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        Zen
+      </button>
+      <button
+        id="toggleTimerBtnMenu"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          text-align: left;
+        "
+      >
+        Toggle Timer
+      </button>
+      <div style="display: flex; gap: 5px; align-items: center;">
+        <button
+          id="prevBgBtn"
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+          "
+          title="Previous background"
+        >
+          &lt;
+        </button>
+        <button
+          id="viewAllImagesBtn"
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+          "
+          title="View all background images"
+        >
+          All Images
+        </button>
+        <button
+          id="nextBgBtn"
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+          "
+          title="Next background"
+        >
+          &gt;
+        </button>
+      </div>
+      <button
+        id="bgViewModeBtn"
+        style="
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: none;
+          padding: 8px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 12px;
+          text-align: left;
+          width: 100%;
+        "
+        title="Cycle through background view modes"
+      >
+        View: Default
+      </button>
+      <!-- Quick Links Section -->
+      <div
+        id="quickLinksSection"
+        style="
+          margin-top: 10px;
+          padding-top: 10px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        "
+      >
+        <div
+          style="
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+          "
+        >
+          Quick Links
+        </div>
+        <!-- Add Quick Link Form -->
+        <div
+          id="quickLinkForm"
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 8px;
+          "
+        >
+          <input
+            type="text"
+            id="quickLinkUrlInput"
+            placeholder="Enter URL"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              padding: 6px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              width: 100%;
+              box-sizing: border-box;
+            "
+          />
+          <input
+            type="text"
+            id="quickLinkNameInput"
+            placeholder="Name (optional)"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              padding: 6px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              width: 100%;
+              box-sizing: border-box;
+            "
+          />
+          <button
+            id="addQuickLinkBtn"
+            style="
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border: none;
+              padding: 6px 10px;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 12px;
+              text-align: center;
+            "
+          >
+            + Add Link
+          </button>
+        </div>
+        <!-- Quick Links Container -->
+        <div
+          id="quickLinksContainer"
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-height: 150px;
+            overflow-y: auto;
+          "
+        >
+          <!-- Quick links will be dynamically added here -->
+        </div>
+      </div>
+      <div
+        style="
+          color: rgba(255, 255, 255, 0.4);
+          font-size: 10px;
+          text-align: center;
+          padding-top: 8px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          margin-top: 5px;
+        "
+      >
+        v2026.01.09.v.01
+      </div>
+      </div>
+      <!-- End Panel Content -->
+    </div>
 
     <!-- Top-left controls area -->
     <div
