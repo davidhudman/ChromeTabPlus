@@ -246,7 +246,7 @@ function renderQuickLinks() {
     deleteBtn.style.cursor = 'pointer';
     deleteBtn.style.fontSize = '14px';
     deleteBtn.style.lineHeight = '1';
-    deleteBtn.textContent = '×';
+    deleteBtn.textContent = '\u00D7';
     deleteBtn.title = 'Delete link';
 
     // Delete click handler
