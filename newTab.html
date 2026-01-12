@@ -1128,5 +1128,84 @@
         </div>
       </div>
     </div>
+
+    <!-- Background Info Display (Bottom-Left) -->
+    <div
+      id="bgInfoDisplay"
+      style="
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: white;
+        border-radius: 10px;
+        padding: 15px 20px;
+        max-width: 400px;
+        z-index: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      "
+      onmouseenter="this.style.background='rgba(0, 0, 0, 0.85)'"
+      onmouseleave="this.style.background='rgba(0, 0, 0, 0.7)'"
+    >
+      <!-- Collapsed view (title + arrow) -->
+      <div
+        id="bgInfoCollapsed"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 15px;
+        "
+      >
+        <div
+          id="bgInfoTitleCollapsed"
+          style="
+            font-size: 16px;
+            font-weight: 500;
+            flex: 1;
+          "
+        >
+          Loading...
+        </div>
+        <div
+          style="
+            font-size: 18px;
+            transition: transform 0.3s ease;
+          "
+          id="bgInfoArrow"
+        >
+          →
+        </div>
+      </div>
+
+      <!-- Expanded view (full info) -->
+      <div
+        id="bgInfoExpanded"
+        style="
+          display: none;
+          margin-top: 15px;
+          padding-top: 15px;
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
+        "
+      >
+        <div style="margin-bottom: 10px; font-size: 14px;">
+          <strong>Photographer:</strong>
+          <span id="bgInfoPhotographer"></span>
+        </div>
+        <div style="margin-bottom: 10px; font-size: 14px;">
+          <strong>Location:</strong> <span id="bgInfoLocation"></span>
+        </div>
+        <div style="font-size: 14px;">
+          <strong>Nearby Airports:</strong>
+          <div id="bgInfoAirports" style="margin-top: 5px; padding-left: 0;">
+            <!-- Airports will be dynamically added -->
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

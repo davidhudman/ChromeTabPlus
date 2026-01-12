@@ -1,25 +1,279 @@
 [
-  "arches-national-park-dhud-01.jpg",
-  "arches-national-park-dhud-02.jpg",
-  "arches-national-park-dhud-03.jpg",
-  "bend-oregon-dhud-01.jpg",
-  "bend-oregon-dhud-02.jpg",
-  "bend-oregon-dillon-falls-maybe-dhud-04.jpg",
-  "bend-oregon-dillon-falls-maybe-dhud-05.jpg",
-  "bend-oregon-smith-rock-state-park-dhud-03.jpg",
-  "bryce-dhud-01.jpg",
-  "bryce-dhud-02.jpg",
-  "canyonlands-dhud.JPG",
-  "deadhorse-state-park-utah-dhud.jpg",
-  "grand-canyon-national-park-dhud-01.JPG",
-  "grand-canyon-national-park-dhud-02.JPG",
-  "grand-canyon-national-park-dhud-03.JPG",
-  "sequioa-national-park-dhud-02.jpg",
-  "sequioa-national-park-dhud-03.jpg",
-  "sequioa-national-park-dhud-04.jpg",
-  "sequioa-national-park-dhud-05.jpg",
-  "utah-mountains-dhud.jpg",
-  "utah-snow-01.jpg",
-  "zion-dhud-02.jpg",
-  "zion-dhud-03.jpg"
+  {
+    "filename": "arches-national-park-dhud-01.jpg",
+    "title": "Arches National Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "arches-national-park-dhud-02.jpg",
+    "title": "Arches National Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "arches-national-park-dhud-03.jpg",
+    "title": "Arches National Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "bend-oregon-dhud-01.jpg",
+    "title": "Bend Oregon Landscape",
+    "photographer": "David Hudman",
+    "location": "Bend, Oregon, USA",
+    "nearbyAirports": [
+      {"city": "Redmond", "code": "RDM"}
+    ]
+  },
+  {
+    "filename": "bend-oregon-dhud-02.jpg",
+    "title": "Bend Oregon Landscape",
+    "photographer": "David Hudman",
+    "location": "Bend, Oregon, USA",
+    "nearbyAirports": [
+      {"city": "Redmond", "code": "RDM"}
+    ]
+  },
+  {
+    "filename": "bend-oregon-dillon-falls-maybe-dhud-04.jpg",
+    "title": "Dillon Falls",
+    "photographer": "David Hudman",
+    "location": "Bend, Oregon, USA",
+    "nearbyAirports": [
+      {"city": "Redmond", "code": "RDM"}
+    ]
+  },
+  {
+    "filename": "bend-oregon-dillon-falls-maybe-dhud-05.jpg",
+    "title": "Dillon Falls",
+    "photographer": "David Hudman",
+    "location": "Bend, Oregon, USA",
+    "nearbyAirports": [
+      {"city": "Redmond", "code": "RDM"}
+    ]
+  },
+  {
+    "filename": "bend-oregon-smith-rock-state-park-dhud-03.jpg",
+    "title": "Smith Rock State Park",
+    "photographer": "David Hudman",
+    "location": "Bend, Oregon, USA",
+    "nearbyAirports": [
+      {"city": "Redmond", "code": "RDM"}
+    ]
+  },
+  {
+    "filename": "bryce-dhud-01.jpg",
+    "title": "Bryce Canyon National Park",
+    "photographer": "David Hudman",
+    "location": "Bryce, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Cedar City", "code": "CDC"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "bryce-dhud-02.jpg",
+    "title": "Bryce Canyon National Park",
+    "photographer": "David Hudman",
+    "location": "Bryce, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Cedar City", "code": "CDC"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "canyonlands-dhud.JPG",
+    "title": "Canyonlands National Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "cotopaxi-national-park-quito-ecuador-dhud-01.jpg",
+    "title": "Cotopaxi National Park",
+    "photographer": "David Hudman",
+    "location": "Quito, Ecuador",
+    "nearbyAirports": [
+      {"city": "Quito", "code": "UIO"}
+    ]
+  },
+  {
+    "filename": "deadhorse-state-park-utah-dhud.jpg",
+    "title": "Dead Horse Point State Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "grand-canyon-national-park-dhud-01.JPG",
+    "title": "Grand Canyon National Park",
+    "photographer": "David Hudman",
+    "location": "Grand Canyon, Arizona, USA",
+    "nearbyAirports": [
+      {"city": "Flagstaff", "code": "FLG"},
+      {"city": "Phoenix", "code": "PHX"}
+    ]
+  },
+  {
+    "filename": "grand-canyon-national-park-dhud-02.JPG",
+    "title": "Grand Canyon National Park",
+    "photographer": "David Hudman",
+    "location": "Grand Canyon, Arizona, USA",
+    "nearbyAirports": [
+      {"city": "Flagstaff", "code": "FLG"},
+      {"city": "Phoenix", "code": "PHX"}
+    ]
+  },
+  {
+    "filename": "grand-canyon-national-park-dhud-03.JPG",
+    "title": "Grand Canyon National Park",
+    "photographer": "David Hudman",
+    "location": "Grand Canyon, Arizona, USA",
+    "nearbyAirports": [
+      {"city": "Flagstaff", "code": "FLG"},
+      {"city": "Phoenix", "code": "PHX"}
+    ]
+  },
+  {
+    "filename": "hoover-alabama-dhud-01.jpg",
+    "title": "Hoover Alabama",
+    "photographer": "David Hudman",
+    "location": "Hoover, Alabama, USA",
+    "nearbyAirports": [
+      {"city": "Birmingham", "code": "BHM"}
+    ]
+  },
+  {
+    "filename": "jax-beach-volleyball-dhud-01.jpg",
+    "title": "Jacksonville Beach Volleyball",
+    "photographer": "David Hudman",
+    "location": "Jacksonville Beach, Florida, USA",
+    "nearbyAirports": [
+      {"city": "Jacksonville", "code": "JAX"}
+    ]
+  },
+  {
+    "filename": "Marino-Ballena-national-park-uvita-costa-rica-dhud-01.jpg",
+    "title": "Marino Ballena National Park",
+    "photographer": "David Hudman",
+    "location": "Uvita, Costa Rica",
+    "nearbyAirports": [
+      {"city": "San José", "code": "SJO"}
+    ]
+  },
+  {
+    "filename": "Marino-Ballena-national-park-uvita-costa-rica-dhud-02.jpg",
+    "title": "Marino Ballena National Park",
+    "photographer": "David Hudman",
+    "location": "Uvita, Costa Rica",
+    "nearbyAirports": [
+      {"city": "San José", "code": "SJO"}
+    ]
+  },
+  {
+    "filename": "old-quito-historic-district-ecuador-dhud.jpg",
+    "title": "Old Quito Historic District",
+    "photographer": "David Hudman",
+    "location": "Quito, Ecuador",
+    "nearbyAirports": [
+      {"city": "Quito", "code": "UIO"}
+    ]
+  },
+  {
+    "filename": "sequioa-national-park-dhud-02.jpg",
+    "title": "Sequoia National Park",
+    "photographer": "David Hudman",
+    "location": "Three Rivers, California, USA",
+    "nearbyAirports": [
+      {"city": "Visalia", "code": "VIS"},
+      {"city": "Fresno", "code": "FAT"}
+    ]
+  },
+  {
+    "filename": "sequioa-national-park-dhud-03.jpg",
+    "title": "Sequoia National Park",
+    "photographer": "David Hudman",
+    "location": "Three Rivers, California, USA",
+    "nearbyAirports": [
+      {"city": "Visalia", "code": "VIS"},
+      {"city": "Fresno", "code": "FAT"}
+    ]
+  },
+  {
+    "filename": "sequioa-national-park-dhud-04.jpg",
+    "title": "Sequoia National Park",
+    "photographer": "David Hudman",
+    "location": "Three Rivers, California, USA",
+    "nearbyAirports": [
+      {"city": "Visalia", "code": "VIS"},
+      {"city": "Fresno", "code": "FAT"}
+    ]
+  },
+  {
+    "filename": "sequioa-national-park-dhud-05.jpg",
+    "title": "Sequoia National Park",
+    "photographer": "David Hudman",
+    "location": "Three Rivers, California, USA",
+    "nearbyAirports": [
+      {"city": "Visalia", "code": "VIS"},
+      {"city": "Fresno", "code": "FAT"}
+    ]
+  },
+  {
+    "filename": "utah-mountains-dhud.jpg",
+    "title": "Utah Mountains",
+    "photographer": "David Hudman",
+    "location": "Utah, USA",
+    "nearbyAirports": [
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "utah-snow-01.jpg",
+    "title": "Utah Snow Scene",
+    "photographer": "David Hudman",
+    "location": "Utah, USA",
+    "nearbyAirports": [
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "zion-dhud-02.jpg",
+    "title": "Zion National Park",
+    "photographer": "David Hudman",
+    "location": "Springdale, Utah, USA",
+    "nearbyAirports": [
+      {"city": "St. George", "code": "SGU"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "zion-dhud-03.jpg",
+    "title": "Zion National Park",
+    "photographer": "David Hudman",
+    "location": "Springdale, Utah, USA",
+    "nearbyAirports": [
+      {"city": "St. George", "code": "SGU"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  }
 ]

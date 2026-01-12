@@ -48,9 +48,15 @@ function loadBundledBackgroundsList() {
       fetch(personalJsonUrl).then(r => r.ok ? r.json() : []).catch(() => [])
     ])
       .then(([mainImages, personalImages]) => {
-        // Prepend appropriate paths to each filename
-        const mainBgs = mainImages.map(img => "backgrounds/" + img);
-        const personalBgs = personalImages.map(img => "backgrounds/personal/" + img);
+        // Map objects and add path property
+        const mainBgs = mainImages.map(imgObj => ({
+          ...imgObj,
+          path: "backgrounds/" + imgObj.filename
+        }));
+        const personalBgs = personalImages.map(imgObj => ({
+          ...imgObj,
+          path: "backgrounds/personal/" + imgObj.filename
+        }));
         bundledBackgrounds = [...mainBgs, ...personalBgs];
         resolve(bundledBackgrounds);
       })
@@ -1309,9 +1315,9 @@ document.addEventListener("DOMContentLoaded", function () {
       chrome.storage.local.get({ bundledBgIndex: 0 }, function(prefs) {
         const currentIndex = prefs.bundledBgIndex;
 
-        bundledBackgrounds.forEach((bg, index) => {
-          const bgUrl = chrome.runtime.getURL(bg);
-          const filename = bg.split('/').pop();
+        bundledBackgrounds.forEach((bgObj, index) => {
+          const bgUrl = chrome.runtime.getURL(bgObj.path);
+          const title = bgObj.title || bgObj.filename;
 
           const thumbContainer = document.createElement("div");
           thumbContainer.style.cssText = `
@@ -1348,7 +1354,7 @@ document.addEventListener("DOMContentLoaded", function () {
             text-overflow: ellipsis;
             white-space: nowrap;
           `;
-          label.textContent = `${index + 1}. ${filename}`;
+          label.textContent = `${index + 1}. ${title}`;
 
           thumbContainer.appendChild(thumb);
           thumbContainer.appendChild(label);
@@ -1379,10 +1385,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Close gallery on escape key
+  // Close gallery and collapse info display on escape key
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && imageGalleryModal && imageGalleryModal.style.display === "block") {
-      imageGalleryModal.style.display = "none";
+    if (e.key === "Escape" || e.keyCode === 27) {
+      if (imageGalleryModal && imageGalleryModal.style.display === "block") {
+        imageGalleryModal.style.display = "none";
+      }
+      if (bgInfoIsExpanded && bgInfoExpanded && bgInfoArrow) {
+        bgInfoExpanded.style.display = "none";
+        bgInfoArrow.style.transform = "rotate(0deg)";
+        bgInfoIsExpanded = false;
+      }
     }
   });
 
@@ -1393,6 +1406,86 @@ document.addEventListener("DOMContentLoaded", function () {
         imageGalleryModal.style.display = "none";
       }
     });
+  }
+
+  // Background info display handlers
+  const bgInfoDisplay = document.getElementById("bgInfoDisplay");
+  const bgInfoCollapsed = document.getElementById("bgInfoCollapsed");
+  const bgInfoExpanded = document.getElementById("bgInfoExpanded");
+  const bgInfoArrow = document.getElementById("bgInfoArrow");
+  let bgInfoIsExpanded = false;
+
+  // Make updateBgInfoDisplay globally accessible
+  window.updateBgInfoDisplay = function() {
+    if (!bgInfoDisplay) return;
+
+    chrome.storage.local.get({ bundledBgIndex: 0 }, function(prefs) {
+      const currentIndex = prefs.bundledBgIndex;
+      if (bundledBackgrounds && bundledBackgrounds[currentIndex]) {
+        const metadata = bundledBackgrounds[currentIndex];
+
+        // Update collapsed title
+        const titleElement = document.getElementById("bgInfoTitleCollapsed");
+        if (titleElement) {
+          titleElement.textContent = metadata.title || "Unknown";
+        }
+
+        // Update expanded info
+        const photographerElement = document.getElementById("bgInfoPhotographer");
+        if (photographerElement) {
+          photographerElement.textContent = metadata.photographer || "Unknown";
+        }
+
+        const locationElement = document.getElementById("bgInfoLocation");
+        if (locationElement) {
+          locationElement.textContent = metadata.location || "Unknown";
+        }
+
+        const airportsList = document.getElementById("bgInfoAirports");
+        if (airportsList) {
+          airportsList.innerHTML = "";
+          if (metadata.nearbyAirports && metadata.nearbyAirports.length > 0) {
+            metadata.nearbyAirports.forEach(airport => {
+              const airportDiv = document.createElement("div");
+              airportDiv.style.cssText = "padding: 3px 0;";
+              airportDiv.textContent = `${airport.city} (${airport.code})`;
+              airportsList.appendChild(airportDiv);
+            });
+          } else {
+            const noAirports = document.createElement("div");
+            noAirports.textContent = "No nearby airports listed";
+            airportsList.appendChild(noAirports);
+          }
+        }
+      }
+    });
+  }
+
+  function toggleBgInfoDisplay() {
+    if (!bgInfoDisplay || !bgInfoExpanded || !bgInfoCollapsed || !bgInfoArrow) return;
+
+    bgInfoIsExpanded = !bgInfoIsExpanded;
+
+    if (bgInfoIsExpanded) {
+      bgInfoExpanded.style.display = "block";
+      bgInfoArrow.style.transform = "rotate(90deg)";
+    } else {
+      bgInfoExpanded.style.display = "none";
+      bgInfoArrow.style.transform = "rotate(0deg)";
+    }
+  }
+
+  // Click on the display to toggle
+  if (bgInfoDisplay) {
+    bgInfoDisplay.addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleBgInfoDisplay();
+    });
+  }
+
+  // Initialize the display on page load
+  if (bgInfoDisplay) {
+    updateBgInfoDisplay();
   }
 
   // Toggle timer button in hamburger menu
@@ -5142,7 +5235,7 @@ function checkAndLoadBackgroundImage() {
         clearedOldBackgroundImages: true,
         photoSourceType: "bundled",
         bundledBgIndex: 0,
-        currentBgFilename: bundledBackgrounds.length > 0 ? bundledBackgrounds[0] : null
+        currentBgFilename: bundledBackgrounds.length > 0 ? bundledBackgrounds[0].path : null
       }, function() {
         loadBundledBackground(0);
       });
@@ -5176,7 +5269,7 @@ function checkAndLoadBackgroundImage() {
           // Try to find the image by filename first (persists across list changes)
           let indexToLoad = 0;
           if (preferences.currentBgFilename) {
-            const foundIndex = bundledBackgrounds.indexOf(preferences.currentBgFilename);
+            const foundIndex = bundledBackgrounds.findIndex(bg => bg.path === preferences.currentBgFilename);
             if (foundIndex !== -1) {
               indexToLoad = foundIndex;
             } else {
@@ -5211,7 +5304,7 @@ function loadBundledBackground(index) {
   index = index % bundledBackgrounds.length;
 
   // Use chrome.runtime.getURL for cross-platform compatibility
-  const bgPath = chrome.runtime.getURL(bundledBackgrounds[index]);
+  const bgPath = chrome.runtime.getURL(bundledBackgrounds[index].path);
 
   const bodyEl = document.getElementById("bodyid");
   if (!bodyEl) {
@@ -5226,7 +5319,7 @@ function loadBundledBackground(index) {
     bodyEl.style.backgroundColor = "";
 
     // Check if this photo has a saved view mode, otherwise reset to default
-    const newFilename = bundledBackgrounds[index];
+    const newFilename = bundledBackgrounds[index].path;
     chrome.storage.local.get({ bgViewModes: {} }, function(items) {
       if (items.bgViewModes[newFilename] !== undefined) {
         // Apply saved view mode for this photo
@@ -5240,15 +5333,21 @@ function loadBundledBackground(index) {
       }
     });
 
-    // Save the current index and filename only after successful load
+    // Save the current index, filename, and metadata only after successful load
     chrome.storage.local.set({
       bundledBgIndex: index,
-      currentBgFilename: bundledBackgrounds[index],
+      currentBgFilename: bundledBackgrounds[index].path,
+      currentBgMetadata: bundledBackgrounds[index],
       useDefaultBackground: false,
       photoSourceType: "bundled",
     }, function() {
-      const filename = bundledBackgrounds[index].split('/').pop();
-      showNotification(`${index + 1}/${bundledBackgrounds.length}: ${filename}`);
+      const title = bundledBackgrounds[index].title || bundledBackgrounds[index].filename;
+      showNotification(`${index + 1}/${bundledBackgrounds.length}: ${title}`);
+
+      // Update the background info display
+      if (typeof updateBgInfoDisplay === "function") {
+        updateBgInfoDisplay();
+      }
     });
   };
   img.onerror = function() {
