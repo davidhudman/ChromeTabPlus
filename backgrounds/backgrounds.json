@@ -30,6 +30,16 @@
     ]
   },
   {
+    "filename": "arches-national-park-double-arch-dhud.png",
+    "title": "Double Arch, Arches National Park",
+    "photographer": "David Hudman",
+    "location": "Moab, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Moab", "code": "CNY"},
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
     "filename": "bend-oregon-dhud-01.jpg",
     "title": "Bend Oregon Landscape",
     "photographer": "David Hudman",
@@ -105,6 +115,16 @@
     ]
   },
   {
+    "filename": "black-canyon.png",
+    "title": "Black Canyon of the Gunnison National Park",
+    "photographer": "David Hudman",
+    "location": "Montrose, Colorado, USA",
+    "nearbyAirports": [
+      {"city": "Montrose", "code": "MTJ"},
+      {"city": "Denver", "code": "DEN"}
+    ]
+  },
+  {
     "filename": "cotopaxi-national-park-quito-ecuador-dhud-01.jpg",
     "title": "Cotopaxi National Park",
     "photographer": "David Hudman",
@@ -172,6 +192,51 @@
     ]
   },
   {
+    "filename": "jaxbeach-sunset.png",
+    "title": "Jacksonville Beach Sunset",
+    "photographer": "David Hudman",
+    "location": "Jacksonville Beach, Florida, USA",
+    "nearbyAirports": [
+      {"city": "Jacksonville", "code": "JAX"}
+    ]
+  },
+  {
+    "filename": "lighthouse-rock-palo-duro-state-park-texas.png",
+    "title": "Lighthouse Rock, Palo Duro Canyon State Park",
+    "photographer": "David Hudman",
+    "location": "Canyon, Texas, USA",
+    "nearbyAirports": [
+      {"city": "Amarillo", "code": "AMA"}
+    ]
+  },
+  {
+    "filename": "millcreek-trail-salt-lake-city.png",
+    "title": "Mill Creek Trail",
+    "photographer": "David Hudman",
+    "location": "Salt Lake City, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "millcreek-trail-salt-lake-city2.png",
+    "title": "Mill Creek Trail",
+    "photographer": "David Hudman",
+    "location": "Salt Lake City, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Salt Lake City", "code": "SLC"}
+    ]
+  },
+  {
+    "filename": "Missoula-Public-Library.png",
+    "title": "Missoula Public Library",
+    "photographer": "David Hudman",
+    "location": "Missoula, Montana, USA",
+    "nearbyAirports": [
+      {"city": "Missoula", "code": "MSO"}
+    ]
+  },
+  {
     "filename": "Marino-Ballena-national-park-uvita-costa-rica-dhud-01.jpg",
     "title": "Marino Ballena National Park",
     "photographer": "David Hudman",
@@ -236,6 +301,15 @@
     "nearbyAirports": [
       {"city": "Visalia", "code": "VIS"},
       {"city": "Fresno", "code": "FAT"}
+    ]
+  },
+  {
+    "filename": "soccer-field-salt-lake-city.png",
+    "title": "Soccer Field, Salt Lake City",
+    "photographer": "David Hudman",
+    "location": "Salt Lake City, Utah, USA",
+    "nearbyAirports": [
+      {"city": "Salt Lake City", "code": "SLC"}
     ]
   },
   {
