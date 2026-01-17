@@ -1,49 +1,26 @@
 ﻿# Chrome Tab Plus
 
-This chrome extension lets you see:
+Features:
 
-- Current weather with sunrise and sunset times
 - Cryptocurrency quotes
-- Foreign exchange quotes
-- Lets you set custom background images to appear when you open a new tab
+- New tab becomes a Kanban board
+- New tab beautiful background images
 
-I added the background images option because I was mad about the people at the Chrome Extension called "Momentum" for trying to charge people monthly to see backgrounds of their choice
+I added the background images option because I was mad about the people at the Chrome Extension called "Momentum" for trying to charge people monthly to see backgrounds of their choice. With this, you can drop them into the /backgrounds/personal/ folder and add them to the /backgrounds/personal/backgrounds.json file. 
 
-[![](https://github.com/davidhudman/ChromeTabPlus/blob/master/Screenshots/SS01.JPG)](https://github.com/davidhudman/ChromeTabPlus)
-
----
+[![](https://github.com/davidhudman/ChromeTabPlus/blob/master/Screenshots/SS02.png)](https://github.com/davidhudman/ChromeTabPlus)
 
 ### Access and Control
 
 - See the standard options page
 
----
-
-Version: 1.0
-
-This setup requires the following items:
-
-- Chrome Browser
-
----
-
-### End User Instructions
-
-Select your personal photos to display whenever you open a new tab
-
----
-
 ### How do I get set up?
 
-- Make sure you "Allow access to file URLs" is checked for this extension under Manage Chrome Extensions
-- Go to the options page for this extension
-- Click "Show Images Setup"
-- Click "Choose Files"
-- Browse to the folder that contains your photos (they must be in the same folder)
-- Copy the full folder path from the top of the window
-- Highlight all the photos you want
-- Click OK
-- Paste your file path into the filename text box
+- clone this repository
+- open chrome://extensions/
+- click "Load unpacked"
+- select the folder where you cloned this repository
+- allow any permissions that are requested
 
 ### Who do I talk to for help?
 
