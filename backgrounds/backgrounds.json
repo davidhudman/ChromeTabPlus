@@ -201,6 +201,15 @@
     ]
   },
   {
+    "filename": "jaxbeach-sunset-dark.png",
+    "title": "Jacksonville Beach Sunset (Dark)",
+    "photographer": "David Hudman",
+    "location": "Jacksonville Beach, Florida, USA",
+    "nearbyAirports": [
+      {"city": "Jacksonville", "code": "JAX"}
+    ]
+  },
+  {
     "filename": "lighthouse-rock-palo-duro-state-park-texas.png",
     "title": "Lighthouse Rock, Palo Duro Canyon State Park",
     "photographer": "David Hudman",
