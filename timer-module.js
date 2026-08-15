@@ -505,15 +505,21 @@ function initCountdownTimer() {
       {
         timerLabel: "Timer",
         timerVisible: true,
-        lastTimerInput: "25:00",
+        lastTimerInput: "15:00",
       },
       function (items) {
         if (timerLabel) timerLabel.textContent = items.timerLabel;
 
         // Set default timer display if not running
         if (!isRunning && !isPaused) {
+          // Ignore tiny leftover values (< 1 minute) so the timer
+          // defaults to 15 minutes instead of a stale short countdown.
+          let defaultInput = items.lastTimerInput;
+          if (parseTimeInput(defaultInput) < 60) {
+            defaultInput = "15:00";
+          }
           if (timerDisplay)
-            timerDisplay.textContent = formatTimeInput(items.lastTimerInput);
+            timerDisplay.textContent = formatTimeInput(defaultInput);
         }
 
         // Apply saved visibility (toggle button moved to hamburger menu)

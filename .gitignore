@@ -10,3 +10,6 @@ backgrounds/personal/backgrounds.json
 # Auto Claude data directory
 .auto-claude/
 .worktrees
+
+# macOS metadata
+.DS_Store
