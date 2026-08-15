@@ -76,12 +76,16 @@ function saveOptions() {
   // Get values from form fields
   const zipcode = document.getElementById("zipcode").value;
   const stocks = document.getElementById("stocks").value;
+  const coinGeckoApiKey = document
+    .getElementById("coinGeckoApiKey")
+    .value.trim();
 
   // Save basic settings to sync storage
   chrome.storage.sync.set(
     {
       zip: zipcode,
       stocks: stocks,
+      coinGeckoApiKey: coinGeckoApiKey,
     },
     function () {
       console.log("Basic settings saved to sync storage");
@@ -116,11 +120,14 @@ function restoreOptions() {
       // Default values
       zip: "",
       stocks: "",
+      coinGeckoApiKey: "",
     },
     function (syncItems) {
       // Populate form fields
       document.getElementById("zipcode").value = syncItems.zip;
       document.getElementById("stocks").value = syncItems.stocks;
+      const cgKeyEl = document.getElementById("coinGeckoApiKey");
+      if (cgKeyEl) cgKeyEl.value = syncItems.coinGeckoApiKey || "";
 
       // Get background images from local storage
       chrome.storage.local.get(

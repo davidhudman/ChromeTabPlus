@@ -18,7 +18,7 @@
     "https://api.open-meteo.com/*",
     "https://api.sunrise-sunset.org/*",
     "https://api.zippopotam.us/*",
-    "https://min-api.cryptocompare.com/*",
+    "https://api.coingecko.com/*",
     "https://mempool.space/*",
     "wss://www.gasinfo.io/*",
     "https://api.exchangerate.host/*"
@@ -33,6 +33,6 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://api.open-meteo.com https://api.sunrise-sunset.org https://api.zippopotam.us https://min-api.cryptocompare.com https://mempool.space wss://www.gasinfo.io https://api.exchangerate.host"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://api.open-meteo.com https://api.sunrise-sunset.org https://api.zippopotam.us https://api.coingecko.com https://mempool.space wss://www.gasinfo.io https://api.exchangerate.host"
   }
 }

@@ -3,6 +3,37 @@
 // found in the LICENSE file.
 var displayLabels = true;
 
+// Crypto prices come from CoinGecko. The free "Demo" API key is optional but
+// recommended (higher rate limits); set it on the extension's Options page. It
+// is stored in chrome.storage.sync, never committed to source. Leave blank to
+// use CoinGecko's keyless endpoints.
+// Maps our display symbols to CoinGecko coin IDs.
+var COINGECKO_IDS = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  BCH: "bitcoin-cash",
+  ZEC: "zcash",
+  XMR: "monero",
+  DOGE: "dogecoin",
+  ADA: "cardano",
+};
+
+// Reads the CoinGecko Demo API key saved via the Options page
+function getCoinGeckoKey(callback) {
+  try {
+    chrome.storage.sync.get({ coinGeckoApiKey: "" }, function (items) {
+      callback((items && items.coinGeckoApiKey) || "");
+    });
+  } catch (e) {
+    callback("");
+  }
+}
+
+// Builds fetch headers, including the Demo key when one is configured
+function coinGeckoHeaders(key) {
+  return key ? { "x-cg-demo-api-key": key } : {};
+}
+
 var oddsMeeting = [];
 numberOfMeetings = 8;
 numberOfRates = 6;
@@ -583,158 +614,166 @@ let updatePageGasPriceData = (data) => {
 };
 
 function getCryptoPrices() {
-  var request = new XMLHttpRequest(); // create a new request variable so we can make an HTTP GET request on our API
+  getCoinGeckoKey(function (apiKey) {
+    // One /coins/markets call returns price + market cap for every coin we need
+    const ids = Object.values(COINGECKO_IDS).join(",");
+    const url =
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=" +
+      encodeURIComponent(ids) +
+      "&per_page=250&page=1";
 
-  // handle the request
-  request.onreadystatechange = function () {
-    if (request.readyState !== 4) return;
-    if (request.status !== 200) {
-      console.error(`getCryptoPrices: HTTP ${request.status}`);
-      return;
-    }
+    fetch(url, { headers: coinGeckoHeaders(apiKey) })
+      .then(function (resp) {
+        if (!resp.ok) {
+          throw new Error("HTTP " + resp.status);
+        }
+        return resp.json();
+      })
+      .then(function (data) {
+        if (!Array.isArray(data)) {
+          console.error("getCryptoPrices: unexpected response", data);
+          return;
+        }
 
-    let obj;
-    try {
-      obj = JSON.parse(request.responseText);
-    } catch (e) {
-      console.error(
-        "getCryptoPrices: failed to parse JSON",
-        e,
-        request.responseText
-      );
-      return;
-    }
+        // Index the response by CoinGecko id for easy lookup
+        const byId = {};
+        data.forEach(function (c) {
+          if (c && c.id) byId[c.id] = c;
+        });
+        // Helper: fetch a coin object by our display symbol
+        function coin(sym) {
+          return byId[COINGECKO_IDS[sym]] || null;
+        }
 
-    // console.log(`obj.BTC: ${JSON.stringify(obj["BTC"])}`);
+        // Populate the shared price map (used by gas + BTC fee calcs)
+        Object.keys(COINGECKO_IDS).forEach(function (sym) {
+          const c = coin(sym);
+          if (c && typeof c.current_price === "number") {
+            cryptos[sym] = c.current_price;
+          }
+        });
 
-    let coinString = "";
-
-    function parseCoinPrice(coinName) {
-      try {
-        let price = obj.RAW[coinName].USD.PRICE;
-        // Format to whole number for BTC/ETH, 2 decimal places for others
-        let displayPrice;
-        if (coinName === "BTC" || coinName === "ETH") {
+        // Build the displayed price string
+        let coinString = "";
+        function parseCoinPrice(coinName) {
+          const c = coin(coinName);
+          if (!c || typeof c.current_price !== "number") {
+            coinString += "Failed to load " + coinName + "<br>";
+            return;
+          }
+          let price = c.current_price;
+          // Format to whole number for BTC/ETH, 4 decimal places for DOGE, 2 decimal places for others
+          let displayPrice;
+          if (coinName === "BTC" || coinName === "ETH") {
             displayPrice = Math.round(price);
-        } else {
+          } else if (coinName === "DOGE") {
+            displayPrice = price.toFixed(4);
+          } else {
             displayPrice = price.toFixed(2);
+          }
+          coinString += coinName + ": " + displayPrice + "<br>";
         }
-        coinString += coinName + ": " + displayPrice + "<br>";
-        cryptos[coinName] = price;
-      } catch (e) {
-        coinString += "Failed to load " + coinName + "<br>";
-      }
-    }
 
-    const coinList = ["BTC", "ETH", "BCH", "ZEC", "XMR", "DOGE"];
-    for (var i = 0; i < coinList.length; i++) {
-      parseCoinPrice(coinList[i]);
-    }
+        const coinList = ["BTC", "ETH", "BCH", "ZEC", "XMR", "DOGE"];
+        for (var i = 0; i < coinList.length; i++) {
+          parseCoinPrice(coinList[i]);
+        }
 
-    getEthGasPrices();
-    getBtcTransxPrices();
+        getEthGasPrices();
+        getBtcTransxPrices();
 
-    let btcToBch = cryptos["BCH"] / cryptos["BTC"];
-    
-    // Market Cap calculations
-    // Use CIRCULATINGSUPPLYMKTCAP to get the market cap based on circulating supply, not max supply
-    let adaMktCap = obj.RAW["ADA"].USD.CIRCULATINGSUPPLYMKTCAP; 
-    let bchMktCap = obj.RAW["BCH"].USD.CIRCULATINGSUPPLYMKTCAP;
-    let mktCapDiffPct = ((adaMktCap - bchMktCap) / bchMktCap) * 100;
-    
-    // Formatting market caps (e.g. 12.5 B)
-    function formatMktCap(value) {
-        if (value >= 1e9) {
+        let btcToBch = cryptos["BCH"] / cryptos["BTC"];
+
+        // Market Cap calculations (CoinGecko market_cap is circulating-supply based)
+        let bchMktCap = (coin("BCH") || {}).market_cap || 0;
+        let adaMktCap = (coin("ADA") || {}).market_cap || 0;
+        let dogeMktCap = (coin("DOGE") || {}).market_cap || 0;
+        let adaMktCapDiffPct = ((adaMktCap - bchMktCap) / bchMktCap) * 100;
+        let dogeMktCapDiffPct = ((dogeMktCap - bchMktCap) / bchMktCap) * 100;
+
+        // Formatting market caps (e.g. 12.5 B)
+        function formatMktCap(value) {
+          if (value >= 1e9) {
             return (value / 1e9).toFixed(2) + " B";
-        }
-        if (value >= 1e6) {
+          }
+          if (value >= 1e6) {
             return (value / 1e6).toFixed(2) + " M";
+          }
+          return value.toFixed(2);
         }
-        return value.toFixed(2);
-    }
 
-    const btcEl = document.getElementById("BTC");
-    if (btcEl) {
-      btcEl.innerHTML =
-        "<div>" +
-        coinString +
-        "<br />" +
-        "BTC to BCH: " +
-        btcToBch.toFixed(8) +
-        "<br />" + 
-        "BCH vs 2022-01-01: " + ((((btcToBch - 0.009274) / 0.009274) * 100) > 0 ? "+" : "") + (((btcToBch - 0.009274) / 0.009274) * 100).toFixed(2) + "%" +
-        "<br />" + 
-        "BCH vs 2023-01-01: " + ((((btcToBch - 0.005835) / 0.005835) * 100) > 0 ? "+" : "") + (((btcToBch - 0.005835) / 0.005835) * 100).toFixed(2) + "%" +
-        "<br />" + 
-        "BCH vs 2024-01-01: " + ((((btcToBch - 0.006075) / 0.006075) * 100) > 0 ? "+" : "") + (((btcToBch - 0.006075) / 0.006075) * 100).toFixed(2) + "%" +
-        "<br />" +
-        "BCH vs 2025-01-01: " + ((((btcToBch - 0.004647) / 0.004647) * 100) > 0 ? "+" : "") + (((btcToBch - 0.004647) / 0.004647) * 100).toFixed(2) + "%" +
-        "<br />" +
-        "BCH vs 2026-01-01: " + ((((btcToBch - 0.006794) / 0.006794) * 100) > 0 ? "+" : "") + (((btcToBch - 0.006794) / 0.006794) * 100).toFixed(2) + "%" +
-        "<br /><br />" +
-        "ADA Mkt Cap: $" + formatMktCap(adaMktCap) +
-        "<br />" +
-        "BCH Mkt Cap: $" + formatMktCap(bchMktCap) +
-        "<br />" +
-        "ADA vs BCH Mkt Cap Diff: " + mktCapDiffPct.toFixed(2) + "%" +
-        "</div>";
-    }
-  };
-
-  // request data from a coin exchange (using pricemultifull for metadata)
-  request.open(
-    "GET",
-    "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=DOGE,XMR,ZEC,BCH,ETH,BTC,ADA&tsyms=USD",
-    true
-  );
-  request.send();
+        const btcEl = document.getElementById("BTC");
+        if (btcEl) {
+          btcEl.innerHTML =
+            "<div>" +
+            coinString +
+            "<br />" +
+            "BTC to BCH: " +
+            btcToBch.toFixed(8) +
+            "<br />" +
+            "BCH vs 2022-01-01: " + ((((btcToBch - 0.009274) / 0.009274) * 100) > 0 ? "+" : "") + (((btcToBch - 0.009274) / 0.009274) * 100).toFixed(2) + "% (" + ((((0.009274 - btcToBch) / btcToBch) * 100) > 0 ? "+" : "") + (((0.009274 - btcToBch) / btcToBch) * 100).toFixed(2) + "%)" +
+            "<br />" +
+            "BCH vs 2023-01-01: " + ((((btcToBch - 0.005835) / 0.005835) * 100) > 0 ? "+" : "") + (((btcToBch - 0.005835) / 0.005835) * 100).toFixed(2) + "% (" + ((((0.005835 - btcToBch) / btcToBch) * 100) > 0 ? "+" : "") + (((0.005835 - btcToBch) / btcToBch) * 100).toFixed(2) + "%)" +
+            "<br />" +
+            "BCH vs 2024-01-01: " + ((((btcToBch - 0.006075) / 0.006075) * 100) > 0 ? "+" : "") + (((btcToBch - 0.006075) / 0.006075) * 100).toFixed(2) + "% (" + ((((0.006075 - btcToBch) / btcToBch) * 100) > 0 ? "+" : "") + (((0.006075 - btcToBch) / btcToBch) * 100).toFixed(2) + "%)" +
+            "<br />" +
+            "BCH vs 2025-01-01: " + ((((btcToBch - 0.004647) / 0.004647) * 100) > 0 ? "+" : "") + (((btcToBch - 0.004647) / 0.004647) * 100).toFixed(2) + "% (" + ((((0.004647 - btcToBch) / btcToBch) * 100) > 0 ? "+" : "") + (((0.004647 - btcToBch) / btcToBch) * 100).toFixed(2) + "%)" +
+            "<br />" +
+            "BCH vs 2026-01-01: " + ((((btcToBch - 0.006794) / 0.006794) * 100) > 0 ? "+" : "") + (((btcToBch - 0.006794) / 0.006794) * 100).toFixed(2) + "% (" + ((((0.006794 - btcToBch) / btcToBch) * 100) > 0 ? "+" : "") + (((0.006794 - btcToBch) / btcToBch) * 100).toFixed(2) + "%)" +
+            "<br /><br />" +
+            "BCH Mkt Cap: $" + formatMktCap(bchMktCap) +
+            "<br />" +
+            "ADA Mkt Cap: $" + formatMktCap(adaMktCap) +
+            "<br />" +
+            "ADA vs BCH Mkt Cap Diff: " + adaMktCapDiffPct.toFixed(2) + "%" +
+            "<br />" +
+            "DOGE Mkt Cap: $" + formatMktCap(dogeMktCap) +
+            "<br />" +
+            "DOGE vs BCH Mkt Cap Diff: " + dogeMktCapDiffPct.toFixed(2) + "%" +
+            "</div>";
+        }
+      })
+      .catch(function (e) {
+        console.error("getCryptoPrices failed", e);
+        const btcEl = document.getElementById("BTC");
+        if (btcEl && !btcEl.innerHTML) {
+          btcEl.innerHTML =
+            "<div>Failed to load crypto prices (" +
+            (e && e.message ? e.message : "network error") +
+            ")</div>";
+        }
+      });
+  });
 }
 
 function getBchRank() {
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-    if (request.readyState !== 4) return;
-    if (request.status !== 200) {
-      console.error(`getBchRank: HTTP ${request.status}`);
-      return;
-    }
+  getCoinGeckoKey(function (apiKey) {
+    // CoinGecko returns each coin's global market-cap rank directly
+    const url =
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin-cash";
 
-    let obj;
-    try {
-      obj = JSON.parse(request.responseText);
-    } catch (e) {
-      console.error("getBchRank: failed to parse JSON", e);
-      return;
-    }
-    
-    if (obj && obj.Data) {
-        // Find BCH in the list
-        // The list is ordered by Market Cap descending (default for top/mktcapfull)
-        let rank = -1;
-        for (let i = 0; i < obj.Data.length; i++) {
-            if (obj.Data[i].CoinInfo.Name === "BCH") {
-                rank = i + 1; // 1-based rank
-                break;
-            }
-        }
-        
+    fetch(url, { headers: coinGeckoHeaders(apiKey) })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        return resp.json();
+      })
+      .then(function (data) {
+        const bch = Array.isArray(data) ? data[0] : null;
+        const rank = bch ? bch.market_cap_rank : null;
+
         const bchRankEl = document.getElementById("BCHRank");
         if (bchRankEl) {
-            if (rank > 0) {
-                bchRankEl.innerHTML = "<div>BCH Rank: " + rank + "</div>";
-            } else {
-                bchRankEl.innerHTML = "<div>BCH Rank: > 100</div>";
-            }
+          if (rank && rank > 0) {
+            bchRankEl.innerHTML = "<div>BCH Rank: " + rank + "</div>";
+          } else {
+            bchRankEl.innerHTML = "<div>BCH Rank: > 100</div>";
+          }
         }
-    }
-  };
-
-  request.open(
-    "GET",
-    "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=100&tsym=USD",
-    true
-  );
-  request.send();
+      })
+      .catch(function (e) {
+        console.error("getBchRank failed", e);
+      });
+  });
 }
 
 let sitoshisPerBitcoin = 100000000;
