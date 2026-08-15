@@ -1682,6 +1682,48 @@ let boardRenderVersion = 0; // prevent overlapping renders from duplicating UI
 let showDates = true;
 const TSHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
+// Per-column "days since last status change" filters.
+// { all: true } => show everything; { all: false, days: N } => only cards whose
+// status changed within the last N days. Defaults: "done" shows last 7 days,
+// all other columns show everything.
+// In-memory record of which columns currently have their filter panel expanded
+// (kept out of storage so it persists across re-renders but resets each session).
+let boardFilterPanelOpen = {};
+
+function getDefaultColumnFilters() {
+  return {
+    backlog: { all: true, days: 7 },
+    on_deck: { all: true, days: 7 },
+    in_progress: { all: true, days: 7 },
+    done: { all: false, days: 7 },
+  };
+}
+
+// Merge stored filters over defaults so any missing/new columns fall back sensibly
+function normalizeColumnFilters(stored) {
+  const defaults = getDefaultColumnFilters();
+  const merged = {};
+  BOARD_STATUSES.forEach((status) => {
+    const s = (stored && stored[status]) || {};
+    const d = defaults[status] || { all: true, days: 7 };
+    merged[status] = {
+      all: typeof s.all === "boolean" ? s.all : d.all,
+      days: Number.isFinite(s.days) && s.days > 0 ? s.days : d.days,
+    };
+  });
+  return merged;
+}
+
+// Returns true if the todo should be shown given its column's day filter
+function passesColumnDayFilter(todo, columnFilters) {
+  const status = todo.status || "backlog";
+  const f = (columnFilters && columnFilters[status]) || { all: true };
+  if (f.all) return true;
+  const days = Number.isFinite(f.days) && f.days > 0 ? f.days : 7;
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  return (todo.lastStatusChange || 0) >= cutoff;
+}
+
 // Helper function to check if a todo matches the current search filter
 function matchesSearchFilter(todo) {
   // If no search filter, all todos match
@@ -2149,12 +2191,14 @@ function renderBoard() {
   chrome.storage.local.get(
     {
       boardHiddenStatuses: {},
+      boardColumnFilters: {},
       todos: [],
     },
     function (items) {
       // Abort outdated renders
       if (renderToken !== boardRenderVersion) return;
       const hidden = items.boardHiddenStatuses || {};
+      const columnFilters = normalizeColumnFilters(items.boardColumnFilters);
 
       const columnsWrap = document.createElement("div");
       columnsWrap.style.display = "flex";
@@ -2208,6 +2252,31 @@ function renderBoard() {
 
         header.appendChild(leftSide);
 
+        // Right side: filter button + hide/show toggle
+        const rightSide = document.createElement("div");
+        rightSide.style.display = "flex";
+        rightSide.style.alignItems = "center";
+        rightSide.style.gap = "6px";
+
+        const colFilter = columnFilters[status] || { all: true, days: 7 };
+        const filterActive = !colFilter.all;
+
+        const filterBtn = document.createElement("button");
+        filterBtn.textContent = filterActive ? `Filter: ${colFilter.days}d` : "Filter";
+        filterBtn.title = filterActive
+          ? `Showing items updated in the last ${colFilter.days} day(s)`
+          : "Filter by days since last moved";
+        filterBtn.style.background = filterActive
+          ? "rgba(52,199,89,0.85)"
+          : "rgba(0,0,0,0.6)";
+        filterBtn.style.color = "#fff";
+        filterBtn.style.border = "none";
+        filterBtn.style.padding = "4px 8px";
+        filterBtn.style.borderRadius = "4px";
+        filterBtn.style.fontSize = "12px";
+        filterBtn.style.cursor = "pointer";
+        rightSide.appendChild(filterBtn);
+
         const toggleBtn = document.createElement("button");
         toggleBtn.textContent = hidden[status] ? "Show" : "Hide";
         toggleBtn.style.background = "rgba(0,0,0,0.6)";
@@ -2217,9 +2286,123 @@ function renderBoard() {
         toggleBtn.style.borderRadius = "4px";
         toggleBtn.style.fontSize = "12px";
         toggleBtn.style.cursor = "pointer";
-        header.appendChild(toggleBtn);
+        rightSide.appendChild(toggleBtn);
+
+        header.appendChild(rightSide);
 
         col.appendChild(header);
+
+        // Collapsible filter panel for this column
+        const filterPanel = document.createElement("div");
+        filterPanel.style.display = boardFilterPanelOpen[status] ? "block" : "none";
+        filterPanel.style.background = "rgba(0,0,0,0.35)";
+        filterPanel.style.border = "1px solid rgba(255,255,255,0.15)";
+        filterPanel.style.borderRadius = "4px";
+        filterPanel.style.padding = "8px";
+        filterPanel.style.marginBottom = "6px";
+        filterPanel.style.fontSize = "12px";
+        filterPanel.style.color = "#fff";
+
+        // "Show all" radio-style option
+        const allRow = document.createElement("label");
+        allRow.style.display = "flex";
+        allRow.style.alignItems = "center";
+        allRow.style.gap = "6px";
+        allRow.style.cursor = "pointer";
+        allRow.style.marginBottom = "6px";
+
+        const allRadio = document.createElement("input");
+        allRadio.type = "radio";
+        allRadio.name = `colFilterMode_${status}`;
+        allRadio.checked = colFilter.all;
+        allRadio.style.cursor = "pointer";
+        allRow.appendChild(allRadio);
+        const allText = document.createElement("span");
+        allText.textContent = "Show all";
+        allRow.appendChild(allText);
+        filterPanel.appendChild(allRow);
+
+        // "Last N days" option with number input
+        const daysRow = document.createElement("label");
+        daysRow.style.display = "flex";
+        daysRow.style.alignItems = "center";
+        daysRow.style.gap = "6px";
+        daysRow.style.cursor = "pointer";
+
+        const daysRadio = document.createElement("input");
+        daysRadio.type = "radio";
+        daysRadio.name = `colFilterMode_${status}`;
+        daysRadio.checked = !colFilter.all;
+        daysRadio.style.cursor = "pointer";
+        daysRow.appendChild(daysRadio);
+        const daysLabelStart = document.createElement("span");
+        daysLabelStart.textContent = "Last";
+        daysRow.appendChild(daysLabelStart);
+
+        const daysInput = document.createElement("input");
+        daysInput.type = "number";
+        daysInput.min = "1";
+        daysInput.value = colFilter.days;
+        daysInput.style.width = "56px";
+        daysInput.style.padding = "3px 6px";
+        daysInput.style.border = "1px solid rgba(255,255,255,0.25)";
+        daysInput.style.borderRadius = "4px";
+        daysInput.style.background = "rgba(0,0,0,0.4)";
+        daysInput.style.color = "#fff";
+        daysInput.style.fontSize = "12px";
+        daysRow.appendChild(daysInput);
+        const daysLabelEnd = document.createElement("span");
+        daysLabelEnd.textContent = "day(s)";
+        daysRow.appendChild(daysLabelEnd);
+        filterPanel.appendChild(daysRow);
+
+        // Persist the current panel selections to storage and re-render
+        function saveColumnFilter() {
+          const parsedDays = parseInt(daysInput.value, 10);
+          const days = Number.isFinite(parsedDays) && parsedDays > 0 ? parsedDays : 7;
+          const nextFilters = {
+            ...columnFilters,
+            [status]: { all: allRadio.checked, days: days },
+          };
+          chrome.storage.local.set(
+            { boardColumnFilters: nextFilters },
+            function () {
+              renderBoard();
+            }
+          );
+        }
+
+        allRadio.addEventListener("change", saveColumnFilter);
+        daysRadio.addEventListener("change", saveColumnFilter);
+        // Editing the number implies the "Last N days" mode
+        daysInput.addEventListener("input", function () {
+          if (!daysRadio.checked) {
+            daysRadio.checked = true;
+            allRadio.checked = false;
+          }
+        });
+        // Apply on commit (blur / Enter) so typing doesn't re-render mid-keystroke
+        daysInput.addEventListener("change", saveColumnFilter);
+        daysInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            daysInput.blur();
+          }
+        });
+        // Prevent panel toggle / drag interactions leaking through
+        filterPanel.addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+
+        // Toggle the filter panel open/closed
+        filterBtn.addEventListener("click", function () {
+          boardFilterPanelOpen[status] = !boardFilterPanelOpen[status];
+          filterPanel.style.display = boardFilterPanelOpen[status]
+            ? "block"
+            : "none";
+        });
+
+        col.appendChild(filterPanel);
 
         const body = document.createElement("div");
         body.className = "board-col-body";
@@ -2274,6 +2457,7 @@ function renderBoard() {
       // Populate cards
       const todos = items.todos || [];
       const filtered = todos.filter((t) => {
+        if (!passesColumnDayFilter(t, columnFilters)) return false;
         if (currentProjectId === "all") return matchesSearchFilter(t);
         if (currentProjectId === "none") return !t.projectId && matchesSearchFilter(t);
         return t.projectId === currentProjectId && matchesSearchFilter(t);
